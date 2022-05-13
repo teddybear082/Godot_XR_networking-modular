@@ -30,6 +30,8 @@ enum Buttons {
 	VR_TRIGGER = 15
 }
 
+#need to add export variable for choosing whether to associate the pop up button with left or right controller but this will do for now the minute.
+
 export (Buttons) var networking_popup_menu_button = Buttons.VR_BUTTON_BY 
 
 var _fpcontroller = null
@@ -40,16 +42,18 @@ func _ready():
 	_fpcontroller = get_node(fpcontroller_path)
 	_leftcontroller = get_node(leftcontroller_path)
 	_rightcontroller = get_node(rightcontroller_path)
-	
-	if not OS.has_feature("QUEST"):
-		_fpcontroller.get_node("Left_hand/Wrist").set_process(false)
-		_fpcontroller.get_node("Left_hand/Wrist").set_physics_process(false)
-		_fpcontroller.get_node("Right_hand/Wrist").set_process(false)
-		_fpcontroller.get_node("Right_hand/Wrist").set_physics_process(false)
-		_fpcontroller.get_node("Left_hand").queue_free()
-		_fpcontroller.get_node("Right_hand").queue_free()
+
+
+##COMMENTING THIS OUT FOR NOW BECAUSE RELIES ON MODIFIED FP CONTROLLER THAT DOES NOT EXIST YET IN MASTER##	
+#	if not OS.has_feature("QUEST"):
+#		_fpcontroller.get_node("Left_hand/Wrist").set_process(false)
+#		_fpcontroller.get_node("Left_hand/Wrist").set_physics_process(false)
+#		_fpcontroller.get_node("Right_hand/Wrist").set_process(false)
+#		_fpcontroller.get_node("Right_hand/Wrist").set_physics_process(false)
+#		_fpcontroller.get_node("Left_hand").queue_free()
+#		_fpcontroller.get_node("Right_hand").queue_free()
 		
-	#$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
+#	$FPController/LeftHandController/Function_Direct_movement.nonVRkeyboard = true
 
 	if OS.has_feature("QUEST"):
 		if QUESTstartupprotocol == "webrtc":
@@ -74,7 +78,7 @@ func _ready():
 
 
 func vr_right_button_pressed(button: int):
-	print("vr right button pressed ", button)
+#	print("vr right button pressed ", button)
 	if button == networking_popup_menu_button:
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
@@ -86,8 +90,16 @@ func vr_right_button_pressed(button: int):
 			$ViewportNetworkGateway.visible = true
 
 func vr_left_button_pressed(button: int):
-	print("vr left button pressed ", button)
-	
+#	print("vr left button pressed ", button)
+	if button == networking_popup_menu_button:
+		if $ViewportNetworkGateway.visible:
+			$ViewportNetworkGateway.visible = false
+		else:
+			var headtrans = _fpcontroller.get_node("ARVRCamera").global_transform
+			$ViewportNetworkGateway.look_at_from_position(headtrans.origin + headtrans.basis.z*-3, 
+														  headtrans.origin + headtrans.basis.z*-3, 
+														  Vector3(0, 1, 0))
+			$ViewportNetworkGateway.visible = true
 	
 func _physics_process(delta):
 	var lowestfloorheight = -30
