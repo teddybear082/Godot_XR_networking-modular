@@ -9,6 +9,7 @@
 
 [node name="XR-Tools-Networking" type="Node"]
 script = ExtResource( 5 )
+webrtcbroker = "test.mosquitto.org"
 fpcontroller_path = NodePath("../FPController")
 leftcontroller_path = NodePath("../FPController/LeftHandController")
 rightcontroller_path = NodePath("../FPController/RightHandController")
