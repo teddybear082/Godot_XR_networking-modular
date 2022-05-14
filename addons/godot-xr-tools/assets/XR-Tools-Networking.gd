@@ -30,9 +30,11 @@ enum Buttons {
 	VR_TRIGGER = 15
 }
 
-#need to add export variable for choosing whether to associate the pop up button with left or right controller but this will do for now the minute.
+#Variables for left_hand_activate and right_hand_activate control which hand or both the player can bring up the networking menu with.
 
 export (Buttons) var networking_popup_menu_button = Buttons.VR_BUTTON_BY 
+export var left_hand_activate = false
+export var right_hand_activate = true
 
 var _fpcontroller = null
 var _leftcontroller = null
@@ -79,7 +81,7 @@ func _ready():
 
 func vr_right_button_pressed(button: int):
 #	print("vr right button pressed ", button)
-	if button == networking_popup_menu_button:
+	if button == networking_popup_menu_button and right_hand_activate == true:
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
@@ -91,7 +93,7 @@ func vr_right_button_pressed(button: int):
 
 func vr_left_button_pressed(button: int):
 #	print("vr left button pressed ", button)
-	if button == networking_popup_menu_button:
+	if button == networking_popup_menu_button and left_hand_activate == true:
 		if $ViewportNetworkGateway.visible:
 			$ViewportNetworkGateway.visible = false
 		else:
